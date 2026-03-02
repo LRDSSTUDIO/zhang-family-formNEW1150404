@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>2026 張氏家族宗親會報名出席表單</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    :root {
+      --summer-blue: #7DD3F7;
+      --sunny-yellow: #FFD54F;
+      --sakura-pink: #FFEBF0;
+      --earth-brown: #5D4037;
+      --primary-red: #d32f2f;
+      --white: rgba(255, 255, 255, 0.98);
+      --secondary-blue: #0288d1;
+    }
+
+    html, body {
+      margin: 0; padding: 0; width: 100%; min-height: 100vh;
+      font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+      color: var(--earth-brown);
+      background: linear-gradient(135deg, var(--sakura-pink) 0%, #fff9c4 100%);
+      background-attachment: fixed;
+      display: flex; justify-content: center; align-items: flex-start;
+      padding: 20px 0; box-sizing: border-box;
+    }
+
+    .bg-decor { position: fixed; z-index: -1; pointer-events: none; opacity: 0.5; }
+    .bg-sun { top: 20px; right: -20px; font-size: 80px; animation: rotate 20s linear infinite; }
+    .bg-wave { bottom: 20px; left: -10px; font-size: 60px; animation: float 6s ease-in-out infinite; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+    .main-container {
+      width: min(760px, 92vw);
+      background: var(--white);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      box-shadow: 0 15px 50px rgba(125, 211, 247, 0.2);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .wave-container { height: 60px; background: var(--summer-blue); position: relative; overflow: hidden; }
+    .wave1 { 
+      position: absolute; width: 200%; height: 100%; 
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23FFD54F80' d='M0,160L48,176C96,192,192,224,288,213.3C384,203,480,149,576,144C672,139,768,181,864,181.3C960,181,1056,139,1152,122.7L1440,128L1440,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+      bottom: -5px; animation: wave-move 15s linear infinite;
+    }
+    @keyframes wave-move { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    .header-content { padding: 40px 25px; text-align: center; }
+    .header-content h1 { color: var(--primary-red); font-size: clamp(22px, 5vw, 30px); margin: 0 0 20px 0; line-height: 1.3; }
+    .header-content p { font-size: 15px; line-height: 1.8; text-align: justify; margin: 0; }
+
+    .info-card { background: rgba(255, 213, 79, 0.1); padding: 20px; margin: 0 20px 30px; border-radius: 20px; border-left: 8px solid var(--sunny-yellow); }
+    .info-list-item { display: flex; align-items: flex-start; margin-bottom: 10px; font-size: 15px; }
+    .info-emoji { margin-right: 10px; font-size: 18px; }
+
+    .form-section { background: #fff; padding: 25px; margin: 0 20px 25px; border-radius: 20px; border: 1px solid #eef2f5; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+    .section-title { color: var(--secondary-blue); font-size: 20px; font-weight: bold; margin-bottom: 15px; border-bottom: 3px solid var(--summer-blue); padding-bottom: 8px; display: block; text-align: center; }
+
+    .input-group { margin-bottom: 20px; }
+    .input-group label { display: block; font-weight: 600; margin-bottom: 8px; font-size: 16px; }
+    .required-star { color: var(--primary-red); }
+    input[type="text"], textarea { width: 100%; padding: 12px; border: 2px solid #e1e8ed; border-radius: 10px; font-size: 15px; box-sizing: border-box; transition: 0.3s; }
+    input:focus, textarea:focus { outline: none; border-color: var(--summer-blue); background: #f0faff; }
+
+    .radio-option { display: flex; align-items: center; padding: 12px; border: 1px solid #f0f4f8; border-radius: 10px; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+    .radio-option:hover { background: var(--sakura-pink); transform: translateX(5px); }
+    .radio-option input { margin-right: 12px; width: 18px; height: 18px; accent-color: var(--secondary-blue); cursor: pointer; }
+
+    .submit-btn { 
+      background: linear-gradient(135deg, var(--summer-blue) 0%, var(--secondary-blue) 100%); 
+      color: white; border: none; width: 80%; padding: 16px; font-size: 20px; font-weight: bold; 
+      border-radius: 50px; cursor: pointer; display: block; margin: 30px auto; 
+      box-shadow: 0 8px 20px rgba(2, 136, 209, 0.3); transition: 0.3s;
+    }
+    .submit-btn:hover { transform: scale(1.05); filter: brightness(1.1); }
+
+    .footer-text { text-align: center; font-size: 14px; color: #666; padding: 0 20px 40px; line-height: 1.8; }
+    .bold { font-weight: bold; }
+    .red { color: var(--primary-red); }
+    .italic { font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="bg-decor bg-sun">☀️</div>
+  <div class="bg-decor bg-wave">🌊</div>
+
+  <div id="root" style="width:100%; display:flex; justify-content:center;"></div>
+
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
+
+  <script type="text/babel">
+    const { useEffect, useRef } = React;
+
+    function ZhangFamilyApp() {
+      const ACTION_URL = "https://docs.google.com/forms/u/0/d/1eVHj3pEvxO3x2nTQc9KjXglnhGA0pitkgF_77DMLlqk/formResponse";
+      const hasSubmittedRef = useRef(false);
+
+      const handleSubmit = () => {
+        hasSubmittedRef.current = true;
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
+
+      useEffect(() => {
+        const iframe = document.getElementById("hidden_iframe");
+        const handleIframeLoad = () => {
+          if (!hasSubmittedRef.current) return;
+          alert("💖報名成功！我們已收到您的資料，期待與您在張氏宗親會相聚，不見不散～愛您喲🫰");
+          window.location.reload();
+        };
+        iframe.addEventListener("load", handleIframeLoad);
+        return () => iframe.removeEventListener("load", handleIframeLoad);
+      }, []);
+
+      return (
+        <div className="main-container">
+          <div className="wave-container">
+            <div className="wave1"></div>
+          </div>
+
+          <div className="header-content">
+            <h1>🎊 2026 張氏家族宗親會報名出席表單 🎊</h1>
+            <p>
+              <span className="bold">親愛的張氏宗親長輩及家人們：</span><br/>
+              大家平安！歲月如梭，宗誼長存，又到了我們一年一度的家族大團圓時刻！這些年來，無論大家在哪座城市奮鬥，家鄉始終是我們心靈最溫暖的港灣。俗話說「一家人，最重要的就是齊心」，為了讓宗親彼此更加熟悉，凝聚家族力量，今年的宗親會籌備組精心安排了一場豐盛的饗宴，包含美味佳餚、精彩表演、摸彩好禮與高質感伴手禮，誠摯邀請您攜家帶眷共襄盛舉！
+              不論您是看著家族成長的長輩，還是首次參加的新成員，我們都熱忱歡迎您的到來！讓我們齊聚一堂，共同延續這份珍貴的血脈情誼，將家族精神代代相傳、生生不息。
+            </p>
+          </div>
+
+          <div className="info-card">
+            <h2 className="bold" style={{ textAlign: "center", marginBottom: "20px", color: "#5D4037" }}>
+              📍 張氏家族宗親會活動資訊 📍
+            </h2>
+            <div style={{ fontSize: "15px" }}>
+              <div className="info-list-item">
+                <span className="info-emoji">📅</span>
+                <span className="info-text"><span className="bold">活動日期：</span>115 年 04 月 04 日 (星期六)</span>
+              </div>
+              <div className="info-list-item">
+                <span className="info-emoji">⏰</span>
+                <span className="info-text"><span className="bold">活動時間：</span>上午 08:00 – 下午 16:00</span>
+              </div>
+              <div className="info-list-item">
+                <span className="info-emoji">🏟</span>
+                <span className="info-text"><span className="bold">活動地點：</span>大興村阿密斯特越野場 (花蓮縣光復鄉大興村民權街 51 號)</span>
+              </div>
+              <div className="info-list-item">
+                <span className="info-emoji">🏠</span>
+                <span className="info-text"><span className="bold">活動主辦單位：</span>盧家 ｜ <span className="bold">活動協辦單位：</span>蘇家</span>
+              </div>
+            </div>
+          </div>
+
+          <form action={ACTION_URL} method="POST" target="hidden_iframe" onSubmit={handleSubmit}>
+            
+            <div className="form-section">
+              <span className="section-title">✨  報名聯絡資料  ✨</span>
+              <p className="bold red" style={{textAlign: 'center', marginBottom: '15px'}}>📌 請於 115 年 3 月 15 日前完成報名 🌝</p>
+              
+              <div className="input-group">
+                <label>主要聯絡人姓名 <span className="required-star">*</span></label>
+                <input type="text" name="entry.526567900" required placeholder="您的回答" />
+              </div>
+
+              <div className="input-group">
+                <label>所屬家族/分系 <span className="required-star">*</span></label>
+                <p style={{fontSize: '12px', color: '#888', marginBottom: '5px'}}>(例如：家族 －張月妹、蘇保山 / 分系－張主蘭 家 )</p>
+                <input type="text" name="entry.584282293" required placeholder="您的回答" />
+              </div>
+
+              <div className="input-group">
+                <label>聯絡電話 <span className="required-star">*</span></label>
+                <input type="text" name="entry.966537358" required placeholder="您的回答" />
+              </div>
+
+              <div className="input-group">
+                <label>通訊地址</label>
+                <input type="text" name="entry.1629563567" placeholder="您的回答" />
+              </div>
+            </div>
+
+            <div className="form-section">
+              <span className="section-title">✨  當日是否出席  ✨</span>
+              <label className="radio-option">
+                <input type="radio" name="entry.1717444294" value="準時參加" required /> 準時參加
+              </label>
+              <label className="radio-option">
+                <input type="radio" name="entry.1717444294" value="無法參加（以下問題可免填，感謝您對宗親會的支持與關注）" /> 無法參加（以下問題可免填，感謝您對宗親會的支持與關注）
+              </label>
+            </div>
+
+            <div className="form-section" style={{background: '#FFFEF0', borderColor: '#ffe57f'}}>
+              <span className="section-title" style={{color: '#f57f17', borderBottomColor: '#ffe57f'}}>✨  活動用餐登記  ✨</span>
+              <p style={{fontSize: '14px', lineHeight: '1.6'}}>🔸 費用說明 ｜ 每桌 $5,000 元 + 另每人酌收 100 元 (含摸彩券及禮品)</p>
+              
+              <div className="input-group" style={{marginTop: '15px'}}>
+                <label>✨ 活動出席人數 (共幾位) ✨</label>
+                <input type="text" name="entry.1994712913" placeholder="例如：共 5 位" />
+              </div>
+
+              <div className="input-group">
+                <label>🔸 認領整桌 (______ 桌)</label>
+                <input type="text" name="entry.1823301719" placeholder="請填寫桌數" />
+              </div>
+
+              <div className="input-group">
+                <label>🔸 併桌人數 (______ 位)</label>
+                <input type="text" name="entry.710031592" placeholder="由主辦單位安排" />
+              </div>
+
+              <div className="input-group">
+                <label>🔸 用餐特殊需求</label>
+                <label className="radio-option">
+                  <input type="radio" name="entry.1687355696" value="無特殊需求" /> 無特殊需求
+                </label>
+                <label className="radio-option">
+                  <input type="radio" name="entry.1687355696" value="有特殊需求" /> 有特殊需求
+                </label>
+                <textarea name="entry.1860119472" rows="2" placeholder="※ 特殊需求說明 (例如：特殊需求和人數)"></textarea>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <span className="section-title">✨  活動參與意願 ✨</span>
+              <div style={{ 
+                fontSize: "15px", 
+                color: "#555", 
+                marginBottom: "15px", 
+                textAlign: "center",
+                lineHeight: "1.8"
+              }}>
+                ❤️‍🔥 各位張家的舞林高手們請注意！演出現場我們準備了【精美獎品】 等著大家<br/>
+                🫵 只要敢秀、敢跳💃🕺🫷大獎就是你們家的🫸<br/>
+                <span className="bold" style={{ color: "#d32f2f" }}>✨ 家族表演活動參與 📢 前三名有獎品🏆<br/>
+                <span className="bold" style={{ color: "#0c0ce4" }}>🔸 有專業的評審會在現場幫各位打分數🫵</span><br/></span>
+                <span className="bold" style={{ color: "#d32f2f" }}>🔸  評分內容：</span><span className="bold" style={{ color: "#f05524" }}>🥇服裝儀容 🥈舞蹈整齊 🥉拿出你的自信🫵</span><br/>
+              </div>
+
+              <div className="input-group">
+                <label>表演參與意願</label>
+                <label className="radio-option">
+                  <input type="radio" name="entry.393094877" value="願意－用熱情的展現參與表演（請填選 [表演名稱] 及 [表演內容]）" /> 願意－用熱情的展現參與表演（請填選 [表演名稱] 及 [表演內容]）
+                </label>
+                <label className="radio-option">
+                  <input type="radio" name="entry.393094877" value="願願意－用炙熱的眼神觀賞節目（無表演節目）" /> 願意－用炙熱的眼神觀賞節目（無表演節目）
+                </label>
+              </div>
+
+              <div className="input-group">
+                <label className="bold">🎤 表演名稱&內容 🙌</label>
+                <p style={{ fontSize: "15px", color: "#555", marginBottom: "10px" }}>
+                  「花蓮縣舞」排練，不管是經典重現還是大膽編排我們都歡迎！請回傳至張氏 LINE 群組 👉 家族名 / 舞曲名稱 / 舞者名單。
+                </p>
+                <textarea name="entry.1775422134" rows="3" placeholder="請填寫：家族+歌曲+舞者名單"></textarea>
+                <p className="italic" style={{ fontSize: "12px", color: "#e91e63", marginTop: "8px" }}>
+                  🔥 範例：表演家族：張月妹家族＋表演歌曲：披上情人袋＋舞者名單：惠慈、諾亞、張芸以此類推。
+                </p>
+              </div>
+            </div>
+
+            <button type="submit" className="submit-btn">送出報名表單</button>
+
+            <div className="footer-text">
+              <span className="bold red">✨ 宗親會活動好康 ✨</span><br/>
+              <span className="bold" style={{ color: "#0c0ce4" }}>📌 紀念品 📌 紀念貼紙 📌 抽獎活動 📌 越野車體驗</span><br/><br/>
+              <span className="bold red">💓 溫 馨 提 醒 💓</span><br/>
+              <span className="bold" style={{ color: "#20216a" }}> ✨ 如有問題請洽張氏 LINE 群組籌備組。期待見到大家！ ✨<br/>
+              （※ 若報名後需更改人數，請務必提前聯繫工作人員。）</span>
+            </div>
+          </form>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<ZhangFamilyApp />);
+  </script>
+</body>
+</html>
